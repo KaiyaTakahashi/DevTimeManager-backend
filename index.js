@@ -91,7 +91,7 @@ app.post('/api/create_tokens', async (req, res, next) => {
 })
 
 app.post('/create_event', async (req, res) => {
-    console.log(localStorage.getItem("refresh_token"))
+    console.log("this is refresh: ",localStorage.getItem("refresh_token"))
     try {
         const { summary, description, location, startDateTime, endDateTime } = req.body;
         oauth2Client.setCredentials({refresh_token: localStorage.getItem("refresh_token")});
