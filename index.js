@@ -25,6 +25,10 @@ app.use(cors({
     credentials: true,
 }))
 
+// Set up localStorage
+var LocalStorage = require('node-localstorage').LocalStorage,
+localStorage = new LocalStorage('./scratch');
+
 // Set up Express
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
@@ -73,14 +77,13 @@ app.get('/tasks/get', (req, res) => {
 })
 
 // Refresh Token
-// Need to change, store this to database
-var REFRESH_TOKEN = '';
+// Need to change, store this to databe
 app.post('/api/create_tokens', async (req, res, next) => {
     const {code} = req.body;
     try {
         const {tokens} = await oauth2Client.getToken(code);
-        REFRESH_TOKEN = tokens.refresh_token;
-        console.log(REFRESH_TOKEN)
+        localStorage.setItem("refresh_token", tokens.refresh_token);
+        console.log(tokens)
         res.send(tokens);
     } catch(err) {
         res.send(err);
@@ -88,10 +91,10 @@ app.post('/api/create_tokens', async (req, res, next) => {
 })
 
 app.post('/create_event', async (req, res) => {
+    console.log(localStorage.getItem("refresh_token"))
     try {
         const { summary, description, location, startDateTime, endDateTime } = req.body;
-        console.log("this is refresh: ",REFRESH_TOKEN)
-        oauth2Client.setCredentials({refresh_token: REFRESH_TOKEN});
+        oauth2Client.setCredentials({refresh_token: localStorage.getItem("refresh_token")});
         const calendar = google.calendar('v3');
         const response = await calendar.events.insert({
             auth: oauth2Client,
@@ -105,7 +108,7 @@ app.post('/create_event', async (req, res) => {
                     dateTime: startDateTime,
                 },
                 end: {
-                    dateTime: endDateTime,
+                    dateTime: new Date(),
                 }
             }
         })
