@@ -56,6 +56,8 @@ app.post('/tasks/insert', (req, res) => {
     const date = req.body.date;
     const time = req.body.time;
     const isFinished = req.body.isFinished;
+    console.log(date)
+    console.log(time)
     pool.query('INSERT INTO tasks (task_name, date, time, is_finished) VALUES ($1, $2, $3, $4)',
                 [taskName, date, time, isFinished],
                 (err, result) => {
@@ -64,7 +66,30 @@ app.post('/tasks/insert', (req, res) => {
                     }
                     res.send(result);
     })
-})
+});
+
+/* Insert task to weekly_tasks */
+app.post("/weekly_tasks/insert", (req, res) => {
+    const { date, value } = req.body;
+    console.log(date)
+    pool.query('INSERT INTO weekly_tasks (date, time) VALUES ($1, $2)',[date, value], (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        res.send(result);
+    })
+});
+
+/* Insert task to weekly_tasks */
+app.get("/weekly_tasks/get", (req, res) => {
+    const selectQuery = "SELECT * FROM weekly_tasks";
+    pool.query(selectQuery, (err, result) => {
+        if (err) {
+            console.log(err);
+        }
+        res.send(result.rows);
+    })
+});
 
 app.get('/tasks/get', (req, res) => {
     const selectQuery = "SELECT * FROM tasks";
@@ -91,7 +116,6 @@ app.post('/api/create_tokens', async (req, res, next) => {
 })
 
 app.post('/create_event', async (req, res) => {
-    console.log("this is refresh: ",localStorage.getItem("refresh_token"))
     try {
         const { summary, description, location, startDateTime, endDateTime } = req.body;
         oauth2Client.setCredentials({refresh_token: localStorage.getItem("refresh_token")});
