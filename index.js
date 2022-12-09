@@ -72,7 +72,7 @@ app.post('/tasks/insert', (req, res) => {
 app.post("/weekly_tasks/insert", (req, res) => {
     const { date, value } = req.body;
     console.log(date)
-    pool.query('INSERT INTO weekly_tasks (date, time) VALUES ($1, $2)',[date, value], (err, result) => {
+    pool.query('INSERT INTO weekly_tasks (date, value) VALUES ($1, $2)',[date, value], (err, result) => {
         if (err) {
             console.log(err)
         }
