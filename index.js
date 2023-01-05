@@ -80,7 +80,7 @@ app.post("/weekly_tasks/insert", (req, res) => {
     })
 });
 
-/* Insert task to weekly_tasks */
+/* get task to weekly_tasks */
 app.get("/weekly_tasks/get", (req, res) => {
     const selectQuery = "SELECT * FROM weekly_tasks";
     pool.query(selectQuery, (err, result) => {
@@ -90,6 +90,18 @@ app.get("/weekly_tasks/get", (req, res) => {
         res.send(result.rows);
     })
 });
+
+/* Delete task from weekly_task */
+app.delete('/delete', (req, res) => {
+    const id = req.body.id;
+    const deleteQuery = "DELETE FROM tasks WHERE task_id = $1";
+    pool.query(deleteQuery, [id], (err, result) => {
+        if (err) {
+            res.send(err);
+        }
+        res.send(result);
+    })
+})
 
 app.get('/tasks/get', (req, res) => {
     const selectQuery = "SELECT * FROM tasks";
@@ -108,7 +120,7 @@ app.post('/api/create_tokens', async (req, res, next) => {
     try {
         const {tokens} = await oauth2Client.getToken(code);
         localStorage.setItem("refresh_token", tokens.refresh_token);
-        console.log(tokens)
+        console.log(tokens);
         res.send(tokens);
     } catch(err) {
         res.send(err);
