@@ -119,8 +119,9 @@ app.post('/api/create_tokens', async (req, res, next) => {
     const {code} = req.body;
     try {
         const {tokens} = await oauth2Client.getToken(code);
-        localStorage.setItem("refresh_token", tokens.refresh_token);
-        console.log(tokens);
+        if (tokens.refresh_token) {
+            localStorage.setItem("refresh_token", tokens.refresh_token);
+        }
         res.send(tokens);
     } catch(err) {
         res.send(err);
@@ -155,6 +156,7 @@ app.post('/create_event', async (req, res) => {
     }
 });
 
-app.listen(3001, () => {
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
     console.log("running server");
 })
