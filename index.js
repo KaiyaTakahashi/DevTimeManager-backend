@@ -21,7 +21,7 @@ const app = express();
 // Set up cors
 app.use(cors({
     origin: ["http://localhost:3000"],
-    methods: ["GET", "POST", "DELETE"],
+    methods: ["GET", "POST", "DELETE", "UPDATE"],
     credentials: true,
 }))
 
@@ -96,6 +96,19 @@ app.delete('/delete', (req, res) => {
     const id = req.body.id;
     const deleteQuery = "DELETE FROM tasks WHERE task_id = $1";
     pool.query(deleteQuery, [id], (err, result) => {
+        if (err) {
+            res.send(err);
+        }
+        res.send(result);
+    })
+})
+
+/* Update the task from weekly_task */
+app.post('/tasks/update', (req, res) => {
+    const isFinished = req.body.isFinished;
+    const taskId = req.body.taskId;
+    const updateQuery = "UPDATE tasks SET is_finished = $1 WHERE task_id = $2"
+    pool.query(updateQuery, [isFinished, taskId], (err, result) => {
         if (err) {
             res.send(err);
         }
