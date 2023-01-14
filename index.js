@@ -56,8 +56,6 @@ app.post('/tasks/insert', (req, res) => {
     const date = req.body.date;
     const time = req.body.time;
     const isFinished = req.body.isFinished;
-    console.log(date)
-    console.log(time)
     pool.query('INSERT INTO tasks (task_name, date, time, is_finished) VALUES ($1, $2, $3, $4)',
                 [taskName, date, time, isFinished],
                 (err, result) => {
@@ -71,7 +69,7 @@ app.post('/tasks/insert', (req, res) => {
 /* Insert task to weekly_tasks */
 app.post("/weekly_tasks/insert", (req, res) => {
     const { date, value } = req.body;
-    console.log(date)
+    console.log("body: ", req.body);
     pool.query('INSERT INTO weekly_tasks (date, value) VALUES ($1, $2)',[date, value], (err, result) => {
         if (err) {
             console.log(err)
@@ -142,7 +140,6 @@ app.post('/api/create_tokens', async (req, res, next) => {
 })
 
 app.post('/create_event', async (req, res) => {
-    console.log("refresh: ",localStorage.getItem("refresh_token"))
     try {
         const { summary, description, location, startDateTime, endDateTime } = req.body;
         oauth2Client.setCredentials({refresh_token: localStorage.getItem("refresh_token")});
