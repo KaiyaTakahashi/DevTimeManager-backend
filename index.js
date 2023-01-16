@@ -56,8 +56,9 @@ app.post('/tasks/insert', (req, res) => {
     const date = req.body.date;
     const time = req.body.time;
     const isFinished = req.body.isFinished;
-    pool.query('INSERT INTO tasks (task_name, date, time, is_finished) VALUES ($1, $2, $3, $4)',
-                [taskName, date, time, isFinished],
+    const email = req.body.email;
+    pool.query('INSERT INTO tasks (task_name, time, is_finished, date, email) VALUES ($1, $2, $3, $4, $5)',
+                [taskName, time, isFinished, date, email],
                 (err, result) => {
                     if (err) {
                         console.log(err);
@@ -66,11 +67,10 @@ app.post('/tasks/insert', (req, res) => {
     })
 });
 
-/* Insert task to weekly_tasks */
-app.post("/weekly_tasks/insert", (req, res) => {
-    const { date, value } = req.body;
-    console.log("body: ", req.body);
-    pool.query('INSERT INTO weekly_tasks (date, value) VALUES ($1, $2)',[date, value], (err, result) => {
+/* Insert task to progress_tasks */
+app.post("/progress_tasks/insert", (req, res) => {
+    const { date, value, email } = req.body;
+    pool.query('INSERT INTO progress_tasks (date, value, email) VALUES ($1, $2, $3)',[date, value, email], (err, result) => {
         if (err) {
             console.log(err)
         }
@@ -78,10 +78,11 @@ app.post("/weekly_tasks/insert", (req, res) => {
     })
 });
 
-/* get task to weekly_tasks */
-app.get("/weekly_tasks/get", (req, res) => {
-    const selectQuery = "SELECT * FROM weekly_tasks";
-    pool.query(selectQuery, (err, result) => {
+/* get task to progress_tasks */
+app.get("/progress_tasks/get", (req, res) => {
+    const email = req.query.email;
+    const selectQuery = "SELECT * FROM progress_tasks WHERE email = $1";
+    pool.query(selectQuery, [email], (err, result) => {
         if (err) {
             console.log(err);
         }
@@ -89,7 +90,7 @@ app.get("/weekly_tasks/get", (req, res) => {
     })
 });
 
-/* Delete task from weekly_task */
+/* Delete task from progress_task */
 app.delete('/delete', (req, res) => {
     const id = req.body.id;
     const deleteQuery = "DELETE FROM tasks WHERE task_id = $1";
@@ -101,7 +102,7 @@ app.delete('/delete', (req, res) => {
     })
 })
 
-/* Update the task from weekly_task */
+/* Update the task from progress_task */
 app.post('/tasks/update', (req, res) => {
     const isFinished = req.body.isFinished;
     const taskId = req.body.taskId;
@@ -115,8 +116,9 @@ app.post('/tasks/update', (req, res) => {
 })
 
 app.get('/tasks/get', (req, res) => {
-    const selectQuery = "SELECT * FROM tasks";
-    pool.query(selectQuery, (err, result) => {
+    const email = req.query.email;
+    const selectQuery = "SELECT * FROM tasks WHERE email = $1";
+    pool.query(selectQuery, [email], (err, result) => {
         if (err) {
             console.log(err);
         }
@@ -132,6 +134,15 @@ app.post('/api/create_tokens', async (req, res, next) => {
         const {tokens} = await oauth2Client.getToken(code);
         if (tokens.refresh_token) {
             localStorage.setItem("refresh_token", tokens.refresh_token);
+            const idToken = tokens.id_token;
+            const base64Url = idToken.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const payloadinit = new Buffer.from(base64, 'base64').toString('ascii');
+            const payload = JSON.parse(payloadinit)
+            const email = payload.email;
+            pool.query("INSERT INTO users (email, refresh_token) VALUES ($1, $2)", 
+            [email, tokens.refresh_token], (err, result) => {
+            })
         }
         res.send(tokens);
     } catch(err) {
