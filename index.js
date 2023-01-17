@@ -133,7 +133,7 @@ app.post('/api/create_tokens', async (req, res, next) => {
     try {
         const {tokens} = await oauth2Client.getToken(code);
         if (tokens.refresh_token) {
-            localStorage.setItem("refresh_token", tokens.refresh_token);
+            // localStorage.setItem("refresh_token", tokens.refresh_token);
             const idToken = tokens.id_token;
             const base64Url = idToken.split('.')[1];
             const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -151,11 +151,12 @@ app.post('/api/create_tokens', async (req, res, next) => {
 })
 
 app.post('/create_event', async (req, res) => {
-    try {
+    const {email} = req.body
+    pool.query("SELECT refresh_token FROM users WHERE email = $1", [email], (err, result) => {
+        oauth2Client.setCredentials({refresh_token: result.rows[0].refresh_token});
         const { summary, description, location, startDateTime, endDateTime } = req.body;
-        oauth2Client.setCredentials({refresh_token: localStorage.getItem("refresh_token")});
         const calendar = google.calendar('v3');
-        const response = await calendar.events.insert({
+        calendar.events.insert({
             auth: oauth2Client,
             calendarId: 'primary',
             requestBody: {
@@ -170,11 +171,13 @@ app.post('/create_event', async (req, res) => {
                     dateTime: new Date(),
                 }
             }
+        }, function(err, event) {
+            if(err) {
+                console.log("err: ", err);
+                return;
+            }
         })
-        res.send(response);
-    } catch(err) {
-        console.log(err)
-    }
+    })
 });
 
 const PORT = process.env.PORT || 3000;
