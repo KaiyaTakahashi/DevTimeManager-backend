@@ -49,7 +49,7 @@ app.use('/posts',postRoutes);
 
 
 // tasks/insert
-app.post('/tasks/insert', (req, res) => {
+app.post('/insert/tasks', (req, res) => {
     const taskName = req.body.taskName;
     const date = req.body.date;
     const time = req.body.time;
@@ -66,7 +66,7 @@ app.post('/tasks/insert', (req, res) => {
 });
 
 /* Insert task to progress_tasks */
-app.post("/progress_tasks/insert", (req, res) => {
+app.post("/insert/progress_tasks", (req, res) => {
     const { date, value, email } = req.body;
     pool.query('INSERT INTO progress_tasks (date, value, email) VALUES ($1, $2, $3)',[date, value, email], (err, result) => {
         if (err) {
@@ -77,7 +77,7 @@ app.post("/progress_tasks/insert", (req, res) => {
 });
 
 /* get task to progress_tasks */
-app.get("/progress_tasks/get", (req, res) => {
+app.get("/get/progress_tasks", (req, res) => {
     const email = req.query.email;
     const selectQuery = "SELECT * FROM progress_tasks WHERE email = $1";
     pool.query(selectQuery, [email], (err, result) => {
@@ -101,7 +101,7 @@ app.delete('/delete', (req, res) => {
 })
 
 /* Update the task from progress_task */
-app.post('/tasks/update', (req, res) => {
+app.post('/update/tasks', (req, res) => {
     const isFinished = req.body.isFinished;
     const taskId = req.body.taskId;
     const updateQuery = "UPDATE tasks SET is_finished = $1 WHERE task_id = $2"
@@ -113,7 +113,7 @@ app.post('/tasks/update', (req, res) => {
     })
 })
 
-app.get('/tasks/get', (req, res) => {
+app.get('/get/tasks', (req, res) => {
     const email = req.query.email;
     const selectQuery = "SELECT * FROM tasks WHERE email = $1";
     pool.query(selectQuery, [email], (err, result) => {
