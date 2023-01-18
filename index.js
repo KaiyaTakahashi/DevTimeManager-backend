@@ -6,48 +6,28 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const bodyParser = require('body-parser');
 const path = require('path');
+const postRoutes = require('./routes/posts.js');
+const pool = require('./db/db.js');
+const app = express();
 // Set up dotenv
 require('dotenv').config();
 
-// Configure database
-const Pool = require('pg').Pool;
-const devConfig = {
-    user: process.env.PG_USER,
-    password: process.env.PG_PASSWORD,
-    host: process.env.PG_HOST,
-    port: process.env.PG_PORT,
-    database: process.env.PG_DATABASE,
-}
-const proConfig = {
-    connectionString: process.env.DATABASE_URL // heroku addons
-}
-const pool = new Pool(
-    process.env.NODE_ENV === "production" ? proConfig: devConfig
-)
-
-const app = express();
-
-// Set up cors
+// middleware
 app.use(cors({
     origin: ["http://localhost:3000"],
     methods: ["GET", "POST", "DELETE", "UPDATE"],
     credentials: true,
 }))
+// Set up Express
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cookieParser());
+app.use(express.json());
 
 if (process.env.NODE_ENV === "production") {
     // server static content
     // npm run build
     app.use(express.static(path.join(__dirname, "client/buid")));
 }
-
-// Set up localStorage
-var LocalStorage = require('node-localstorage').LocalStorage,
-localStorage = new LocalStorage('./scratch');
-
-// Set up Express
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(express.json());
 
 // Set up google api
 const { google } = require('googleapis');
@@ -61,6 +41,12 @@ const oauth2Client = new google.auth.OAuth2(
 
 // const path = require('path');
 // app.use(express.static(path.join(__dirname + "/public")));
+
+app.use('/posts',postRoutes);
+
+
+
+
 
 // tasks/insert
 app.post('/tasks/insert', (req, res) => {
