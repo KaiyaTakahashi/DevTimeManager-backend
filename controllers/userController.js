@@ -13,7 +13,6 @@ const oauth2Client = new google.auth.OAuth2(
 
 exports.insertUser = async (req, res, next) => {
     const {code} = req.body;
-    console.log(code)
     try {
         const {tokens} = await oauth2Client.getToken(code);
         if (tokens.refresh_token) {
