@@ -8,7 +8,7 @@ const GOOGLE_CLIENT_SERCRET = process.env.GOOGLE_CLIENT_SERCRET;
 const oauth2Client = new google.auth.OAuth2(
         GOOGLE_CLIENT_ID,
         GOOGLE_CLIENT_SERCRET,
-        'http://localhost:3000'
+        'https://dancing-taiyaki-47a928.netlify.app'
 )
 
 exports.insertUser = async (req, res, next) => {
