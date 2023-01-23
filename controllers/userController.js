@@ -36,7 +36,7 @@ exports.createEvent = async (req, res) => {
     const {email} = req.body
     pool.query("SELECT refresh_token FROM users WHERE email = $1", [email], (err, result) => {
         oauth2Client.setCredentials({refresh_token: result.rows[0].refresh_token});
-        const { summary, description, location, startDateTime, endDateTime } = req.body;
+        const { summary, description, location, startDateTime } = req.body;
         const calendar = google.calendar('v3');
         calendar.events.insert({
             auth: oauth2Client,
