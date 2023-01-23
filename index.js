@@ -15,7 +15,7 @@ require('dotenv').config();
 
 // middleware
 app.use(cors({
-    origin: ["https://dancing-taiyaki-47a928.netlify.app"],
+    origin: "*",
     methods: ["GET", "POST", "DELETE", "UPDATE"],
     credentials: true,
 }))
