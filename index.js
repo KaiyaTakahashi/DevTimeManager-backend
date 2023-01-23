@@ -14,11 +14,12 @@ const userRoutes = require('./routes/userRoutes.js');
 require('dotenv').config();
 
 // middleware
-app.use(cors({
-    origin: "*",
-    methods: ["GET", "POST", "DELETE", "UPDATE"],
-    credentials: true,
-}))
+// app.use(cors({
+//     origin: ["https://dancing-taiyaki-47a928.netlify.app"],
+//     methods: ["GET", "POST", "DELETE", "UPDATE"],
+//     credentials: true,
+// }))
+app.use(express.static('build'))
 // Set up Express
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
