@@ -15,7 +15,7 @@ require('dotenv').config();
 
 // middleware
 app.use(cors({
-    origin: ["https://dancing-taiyaki-47a928.netlify.app"],
+    origin: ["https://dev-time-manager-api.onrender.com", "https://dancing-taiyaki-47a928.netlify.app", "http://localhost:3000"],
     methods: ["GET", "POST", "DELETE", "UPDATE"],
     credentials: true,
 }))
@@ -31,6 +31,8 @@ app.use(progressTasksRoutes);
 app.use(userRoutes);
 
 const PORT = process.env.PORT || 3001;
+const HOST = process.env.HOST || "HOST";
 app.listen(PORT, () => {
     console.log("running server on", PORT);
+    console.log("running server on", HOST);
 })

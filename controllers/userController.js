@@ -12,23 +12,27 @@ const oauth2Client = new google.auth.OAuth2(
 )
 
 exports.insertUser = async (req, res, next) => {
-    const {code} = req.body;
-    try {
-        const {tokens} = await oauth2Client.getToken(code);
-        if (tokens.refresh_token) {
-            const idToken = tokens.id_token;
-            const base64Url = idToken.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const payloadinit = new Buffer.from(base64, 'base64').toString('ascii');
-            const payload = JSON.parse(payloadinit)
-            const email = payload.email;
-            pool.query("INSERT INTO users (email, refresh_token) VALUES ($1, $2)", 
-            [email, tokens.refresh_token], (err, result) => {
-            })
+    if (req.body.code) {
+        const code = req.body.code;
+        try {
+            const {tokens} = await oauth2Client.getToken(code);
+            if (tokens.refresh_token) {
+                const idToken = tokens.id_token;
+                const base64Url = idToken.split('.')[1];
+                const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                const payloadinit = new Buffer.from(base64, 'base64').toString('ascii');
+                const payload = JSON.parse(payloadinit)
+                const email = payload.email;
+                pool.query("INSERT INTO users (email, refresh_token) VALUES ($1, $2)", 
+                [email, tokens.refresh_token], (err, result) => {
+                })
+            }
+            res.send(tokens);
+        } catch(err) {
+            res.send(err);
         }
-        res.send(tokens);
-    } catch(err) {
-        res.send(err);
+    } else {
+        res.send();
     }
 };
 
@@ -61,3 +65,13 @@ exports.createEvent = async (req, res) => {
         })
     })
 };
+
+exports.getAllUser = (req, res) => {
+    console.log(pool)
+    pool.query("select * from users", (err, result) => {
+        if (err) {
+            res.send(err);
+        }
+        res.send(result);
+    })
+}

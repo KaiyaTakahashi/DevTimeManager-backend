@@ -56,6 +56,6 @@ exports.getAllTasks = (req, res) => {
         if (err) {
             console.log(err);
         }
-        res.send("This is all task: ", result);
+        res.send(result);
     })
 }
