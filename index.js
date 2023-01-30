@@ -31,8 +31,6 @@ app.use(progressTasksRoutes);
 app.use(userRoutes);
 
 const PORT = process.env.PORT || 3001;
-const HOST = process.env.HOST || "HOST";
 app.listen(PORT, () => {
     console.log("running server on", PORT);
-    console.log("running server on", HOST);
 })
