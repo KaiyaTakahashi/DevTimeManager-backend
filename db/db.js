@@ -6,8 +6,8 @@ const devConfig = {
     host: process.env.PG_HOST,
     port: process.env.PG_PORT,
     database: process.env.PG_DATABASE,
-}
+};
 
-const pool = new Pool(devConfig)
+const pool = new Pool(devConfig);
 
 module.exports = pool;

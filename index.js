@@ -15,7 +15,7 @@ require('dotenv').config();
 
 // middleware
 app.use(cors({
-    origin: ["https://dev-time-manager-api.onrender.com", "https://dancing-taiyaki-47a928.netlify.app", "http://localhost:3000", "https://dev-time-manager-api.onrender.com:"],
+    origin: ["https://dev-time-manager-api.onrender.com/", "https://dancing-taiyaki-47a928.netlify.app/"],
     methods: ["GET", "POST", "DELETE", "UPDATE"],
     credentials: true,
 }))
@@ -26,9 +26,9 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Use routes
-app.use(tasksRoutes);
-app.use(progressTasksRoutes);
-app.use(userRoutes);
+app.use("/tasks", tasksRoutes);
+app.use("/progress_tasks", progressTasksRoutes);
+app.use("/users", userRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
