@@ -26,9 +26,9 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Use routes
-app.use("/tasks", tasksRoutes);
-app.use("/progress_tasks", progressTasksRoutes);
-app.use("/users", userRoutes);
+app.use('/tasks', tasksRoutes);
+app.use('/progress_tasks', progressTasksRoutes);
+app.use('/users', userRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

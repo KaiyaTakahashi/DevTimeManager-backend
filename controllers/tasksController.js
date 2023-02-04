@@ -6,7 +6,7 @@ exports.insertTasks = (req, res) => {
     const time = req.body.time;
     const isFinished = req.body.isFinished;
     const email = req.body.email;
-    pool.query('INSERT INTO tasks (task_name, time, is_finished, date, email) VALUES ($1, $2, $3, $4, $5)',
+    pool.query("INSERT INTO tasks (task_name, time, is_finished, date, email) VALUES ($1, $2, $3, $4, $5)",
                 [taskName, time, isFinished, date, email],
                 (err, result) => {
                     if (err) {

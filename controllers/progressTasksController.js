@@ -13,7 +13,7 @@ exports.getProgressTasks = (req, res) => {
 
 exports.insertProgressTasks = (req, res) => {
     const { date, value, email } = req.body;
-    pool.query('INSERT INTO progress_tasks (date, value, email) VALUES ($1, $2, $3)',[date, value, email], (err, result) => {
+    pool.query("INSERT INTO progress_tasks (date, value, email) VALUES ($1, $2, $3)",[date, value, email], (err, result) => {
         if (err) {
             console.log(err)
         }
