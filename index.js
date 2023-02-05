@@ -15,9 +15,10 @@ require('dotenv').config();
 
 // middleware
 app.use(cors({
-    origin: ["https://dev-time-manager-api.onrender.com", 'https://dancing-taiyaki-47a928.netlify.app', "https://dancing-taiyaki-47a928.netlify.app/" ,"http://localhost:3000", "https://dev-time-manager-api.onrender.com:"],
+    origin: ['https://dev-time-manager-api.onrender.com', 'https://dancing-taiyaki-47a928.netlify.app', 'https://dancing-taiyaki-47a928.netlify.app/' ,'http://localhost:3000', 'https://dev-time-manager-api.onrender.com:'],
     methods: ["GET", "POST", "DELETE", "UPDATE"],
     credentials: true,
+    allowedHeaders: "*",
 }))
 app.use(express.static('build'))
 // Set up Express
