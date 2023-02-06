@@ -9,5 +9,6 @@ const devConfig = {
 };
 
 const pool = new Pool(devConfig);
+pool.connect();
 
 module.exports = pool;
