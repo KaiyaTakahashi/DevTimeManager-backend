@@ -6,6 +6,7 @@ const devConfig = {
     host: process.env.PG_HOST,
     port: process.env.PG_PORT,
     database: process.env.PG_DATABASE,
+    ssl: process.env.PG_SSL
 };
 
 const pool = new Pool(devConfig);
