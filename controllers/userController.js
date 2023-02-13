@@ -65,17 +65,3 @@ exports.createEvent = async (req, res) => {
         })
     })
 };
-
-exports.getAllUser = (req, res) => {
-    console.log(pool)
-    try {
-        pool.query("SELECT * from users", (err, result) => {
-            if (err) {
-                res.send(err);
-            }
-            res.send(result);
-        });   
-    } catch (err) {
-        res.send({"message": err})
-    }
-}

@@ -49,13 +49,3 @@ exports.updateTasks = (req, res) => {
         res.send(result);
     })
 };
-
-exports.getAllTasks = (req, res) => {
-    const selectQuery = "SELECT * FROM tasks";
-    pool.query(selectQuery, (err, result) => {
-        if (err) {
-            console.log(err);
-        }
-        res.send(result);
-    })
-}
